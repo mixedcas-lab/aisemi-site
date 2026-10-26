@@ -1,0 +1,17 @@
+---
+import { relativeRoot } from '../lib/paths';
+const { eyebrow, title, lead = '', tabs = [], active = '' } = Astro.props;
+const root = relativeRoot(Astro.url.pathname);
+---
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">{eyebrow}</span>
+    <h1>{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+  </div>
+  {tabs.length > 0 && (
+    <nav class="container tabs" aria-label={`${title} 하위 메뉴`}>
+      {tabs.map(([label, path]) => <a href={`${root}${path}`} aria-current={path === active ? 'page' : undefined}>{label}</a>)}
+    </nav>
+  )}
+</section>

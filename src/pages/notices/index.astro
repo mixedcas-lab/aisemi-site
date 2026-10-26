@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import NoticeList from '../../components/NoticeList.astro';
+import notices from '../../data/notices.json';
+---
+<Layout title="공지사항" crumbs={[['공지사항']]}>
+  <PageHead eyebrow="NOTICE" title="공지사항" tabs={[['공지사항', 'notices/'], ['사업단 소식', 'news/']]} active="notices/" />
+  <NoticeList items={notices} />
+</Layout>

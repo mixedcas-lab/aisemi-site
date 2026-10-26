@@ -1,0 +1,15 @@
+{
+  "name": "uos-aisemi-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "validate": "node scripts/validate.mjs"
+  },
+  "engines": { "node": ">=22.23.4" },
+  "dependencies": { "astro": "7.4.2" },
+  "packageManager": "pnpm@11.25.0"
+}

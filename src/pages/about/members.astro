@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Pending from '../../components/Pending.astro';
+import { aboutTabs } from '../../lib/tabs';
+---
+<Layout title="구성원 소개" crumbs={[['사업단 소개', 'about/'], ['구성원 소개']]}>
+  <PageHead eyebrow="MEMBERS" title="구성원 소개" tabs={aboutTabs} active="about/members/" />
+  <section class="container section"><Pending text="사업단 구성원 소개를 준비하고 있습니다." /></section>
+</Layout>

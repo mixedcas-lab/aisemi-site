@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import site from '../../data/site.json';
+import notices from '../../data/notices.json';
+import { relativeRoot } from '../../lib/paths';
+import { dot } from '../../lib/format';
+export function getStaticPaths() {
+  const sorted = [...notices].sort((a, b) => b.date.localeCompare(a.date));
+  return sorted.map((n, k) => ({ params: { id: n.id }, props: { n, newer: sorted[k - 1], older: sorted[k + 1] } }));
+}
+const { n, newer, older } = Astro.props;
+const root = relativeRoot(Astro.url.pathname);
+---
+<Layout title={n.title} description={n.body[0]} crumbs={[['공지사항', 'notices/'], ['상세 보기']]}>
+  <article class="container section article">
+    <header class="article-head">
+      <span class="tag">{n.category}</span>
+      <h1>{n.title}</h1>
+      <p class="article-meta"><span>{site.name}</span><time datetime={n.date}>{dot(n.date)}</time></p>
+    </header>
+    <div class="article-body">{n.body.map((p) => <p>{p}</p>)}</div>
+    {n.attachments.length > 0 && (
+      <section class="files" aria-label="첨부파일">
+        <h2>첨부파일</h2>
+        <ul>{n.attachments.map((f) => <li><a href={`${root}files/${f.file}`} target="_blank" rel="noopener">{f.name}</a><span>{f.size}</span></li>)}</ul>
+      </section>
+    )}
+    <nav class="article-nav" aria-label="이전·다음 글">
+      {newer && <a href={`${root}notices/${newer.id}/`}><span>다음 글</span>{newer.title}</a>}
+      {older && <a href={`${root}notices/${older.id}/`}><span>이전 글</span>{older.title}</a>}
+    </nav>
+    <a class="btn btn-line" href={`${root}notices/`}>목록으로</a>
+  </article>
+</Layout>

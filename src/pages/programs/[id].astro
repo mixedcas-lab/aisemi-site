@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import site from '../../data/site.json';
+import programs from '../../data/programs.json';
+import { relativeRoot } from '../../lib/paths';
+import { range, recruitState, recruitLabel } from '../../lib/format';
+export function getStaticPaths() {
+  return programs.map((p) => ({ params: { id: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const root = relativeRoot(Astro.url.pathname);
+const st = recruitState(p.recruit);
+---
+<Layout title={p.title} description={p.summary} crumbs={[['교육 프로그램', 'programs/'], [p.title]]}>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">{p.year}학년도 · {p.kind} · {p.level}</span>
+      <h1>{p.title}</h1>
+      <p class="lead">{p.summary}</p>
+    </div>
+  </section>
+  <div class="container section detail">
+    <div class="detail-main">
+      <section>
+        <h2>교육 개요</h2>
+        <dl class="facts">
+          <div><dt>교육 기간</dt><dd>{range(p.period)}</dd></div>
+          <div><dt>교육 장소</dt><dd>{p.place}</dd></div>
+          <div><dt>교육 시간</dt><dd>총 {p.hours}시간</dd></div>
+          <div><dt>참여 대상</dt><dd>{p.year}년 사업단 참여 승인 학생</dd></div>
+        </dl>
+      </section>
+      {p.courses.length > 0 && (
+        <section>
+          <h2>교육 과정</h2>
+          <ol class="courses">
+            {p.courses.map((c, k) => (
+              <li>
+                <span class="course-no">{String(k + 1).padStart(2, '0')}</span>
+                <div>
+                  {c.cross && <span class="badge">교차과목 · 1과목 인정</span>}
+                  <span class="course-names">{c.names.join(' / ')}</span>
+                </div>
+                <span class="course-credit">{c.credits}학점</span>
+                {c.required ? <span class="badge badge-req">필수</span> : <span></span>}
+              </li>
+            ))}
+          </ol>
+          {p.criteria && <p class="criteria"><strong>이수·양성 기준</strong> {p.criteria}</p>}
+        </section>
+      )}
+      <section>
+        <h2>신청 안내</h2>
+        <ol class="steps">{site.applySteps.map((s) => <li>{s}</li>)}</ol>
+      </section>
+      <a class="btn btn-line" href={`${root}programs/`}>목록으로</a>
+    </div>
+    <aside class="detail-side">
+      <span class="status status-lg" data-recruit={p.recruit.join('|')} data-state={st}>{recruitLabel[st]}</span>
+      <dl>
+        <div><dt>모집 기간</dt><dd>{range(p.recruit)}</dd></div>
+        <div><dt>모집 정원</dt><dd>{p.capacity}명</dd></div>
+        <div><dt>강사진</dt><dd>{p.instructors}</dd></div>
+      </dl>
+      <p class="side-note">해당 연도 사업단 참여 승인이 필요합니다. 온라인 신청은 준비 중이며, 신청 방법은 공지사항에서 안내합니다.</p>
+      <a class="btn" href={`${root}support/`}>참여 신청 안내</a>
+    </aside>
+  </div>
+</Layout>

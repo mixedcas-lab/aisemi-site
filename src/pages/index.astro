@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+import site from '../data/site.json';
+import notices from '../data/notices.json';
+import { relativeRoot } from '../lib/paths';
+import { dot } from '../lib/format';
+const root = relativeRoot(Astro.url.pathname);
+const latest = [...notices].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+const quick = [
+  ['사업단 소개', 'ABOUT US', 'about/'],
+  ['교육과정 안내', 'EDUCATION', 'programs/'],
+  ['공지사항', 'NOTICE', 'notices/'],
+];
+const cards = [
+  ['산학협력', '기업 연계 교육과 산학 프로젝트', 'cooperation/'],
+  ['사업단 소식', '사업단의 새로운 이야기', 'news/'],
+  ['자료실', '교육 자료 및 각종 서식', 'resources/'],
+  ['오시는 길', '서울시립대학교 캠퍼스 안내', 'location/'],
+];
+---
+<Layout>
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="eyebrow eyebrow-light">CENTER FOR AI SEMICONDUCTOR</span>
+      <h1><span class="hero-sub">서울시립대학교</span>{site.name}</h1>
+      <p class="hero-tag">{site.tagline}</p>
+      <div class="hero-quick">
+        {quick.map(([label, en, path]) => <a href={`${root}${path}`}><span>{label}</span><small>{en}</small></a>)}
+      </div>
+    </div>
+    <div class="hero-grid" aria-hidden="true"></div>
+  </section>
+
+  <section class="container home-board">
+    <div class="board">
+      <div class="board-head">
+        <h2>알림마당</h2>
+        <a class="more" href={`${root}notices/`}>공지사항 전체보기 <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="notice-list">
+        {latest.map((n) => (
+          <li><a href={`${root}notices/${n.id}/`}>
+            <span class="tag">{n.category}</span>
+            <span class="notice-title">{n.title}</span>
+            <time datetime={n.date}>{dot(n.date)}</time>
+          </a></li>
+        ))}
+      </ul>
+    </div>
+    <div class="popup" data-slider aria-roledescription="carousel" aria-label="팝업존">
+      <div class="popup-head">
+        <h2>POPUP ZONE</h2>
+        <div class="popup-ctrl">
+          <span class="popup-count" data-counter>01 / {String(site.popups.length).padStart(2, '0')}</span>
+          <button type="button" data-prev aria-label="이전 팝업">‹</button>
+          <button type="button" data-pause aria-pressed="false" aria-label="자동 넘김 멈춤">Ⅱ</button>
+          <button type="button" data-next aria-label="다음 팝업">›</button>
+        </div>
+      </div>
+      {site.popups.map((p, k) => (
+        <a class="popup-slide" data-slide hidden={k > 0} href={`${root}${p.path}`} aria-roledescription="slide" aria-label={`${k + 1} / ${site.popups.length}`}>
+          <span class="popup-eyebrow">{p.eyebrow}</span>
+          <strong set:html={p.title.replace('\n', '<br/>')} />
+          <span class="popup-cta">{p.cta} <span aria-hidden="true">→</span></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="tracks-band">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">EDUCATION</span><h2>AI반도체 교육과정</h2></div>
+        <a class="more" href={`${root}programs/`}>교육과정 전체보기 <span aria-hidden="true">→</span></a>
+      </div>
+      <ol class="tracks">
+        {site.tracks.map((t, k) => (
+          <li class={`track track-${k + 1}`}>
+            <span class="track-step">STEP {k + 1} · {t.level} 과정</span>
+            <h3>{t.title}</h3>
+            <p>{t.text}</p>
+            <a href={`${root}programs/`}>자세히 보기 <span aria-hidden="true">→</span></a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="container quick-cards">
+    {cards.map(([label, text, path]) => (
+      <a class="qcard" href={`${root}${path}`}><strong>{label}</strong><span>{text}</span><span class="qcard-arrow" aria-hidden="true">→</span></a>
+    ))}
+  </section>
+</Layout>

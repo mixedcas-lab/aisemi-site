@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
+import site from '../data/site.json';
+import { relativeRoot } from '../lib/paths';
+const root = relativeRoot(Astro.url.pathname);
+---
+<Layout title="참여 신청 안내" crumbs={[['학생지원'], ['참여 신청 안내']]}>
+  <PageHead eyebrow="STUDENT SUPPORT" title="참여 신청 안내" lead="교육 프로그램을 신청하려면 해당 연도의 사업단 참여 승인이 먼저 필요합니다." tabs={[['참여 신청 안내', 'support/'], ['자료실', 'resources/']]} active="support/" />
+  <section class="container section support">
+    <ol class="steps steps-big">{site.applySteps.map((s) => <li>{s}</li>)}</ol>
+    <div class="callout">
+      <strong>온라인 신청 시스템 준비 중</strong>
+      <p>학교 이메일 로그인과 온라인 신청 기능은 준비하고 있습니다. 그때까지 신청 방법과 일정은 공지사항으로 안내합니다.</p>
+      <a class="btn" href={`${root}notices/`}>공지사항 보기</a>
+    </div>
+    <dl class="facts">
+      <div><dt>대상</dt><dd>AI반도체 분야에 관심 있는 서울시립대학교 학생</dd></div>
+      <div><dt>학적 정보 갱신</dt><dd>참여 학생은 1학기와 2학기 시작 시 학과·학년·졸업 예정 시기를 갱신합니다.</dd></div>
+    </dl>
+  </section>
+</Layout>

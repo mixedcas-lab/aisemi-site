@@ -1,0 +1,89 @@
+---
+import site from '../data/site.json';
+import { relativeRoot } from '../lib/paths';
+const { title = '', description = site.description, crumbs = [] } = Astro.props;
+const root = relativeRoot(Astro.url.pathname);
+const current = Astro.url.pathname.split('/').filter(Boolean)[0] || '';
+const isCurrent = (item) => [item.path, ...(item.sub || []).map((s) => s.path)].some((p) => p.split('/')[0] === current);
+const pageTitle = title ? `${title} | ${site.name}` : site.fullName;
+const canonical = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/$/, '') + Astro.url.pathname : undefined;
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a2a5c" />
+    {site.draft && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" href={`${root}styles.css`} />
+    <title>{pageTitle}</title>
+    <script is:inline src={`${root}site.js`} defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    {site.draft && <div class="draft-bar" role="note"><div class="container">{site.draftNote}</div></div>}
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href={root} aria-label={`${site.fullName} 홈`}>
+          <img src={`${root}images/uos-blue.png`} alt="서울시립대학교" width="900" height="97" />
+          <span class="brand-name">{site.name}</span>
+        </a>
+        <nav class="gnb" aria-label="주 메뉴">
+          {site.nav.map((item) => (
+            <div class="gnb-item">
+              <a href={`${root}${item.path}`} aria-current={isCurrent(item) ? 'page' : undefined}>{item.label}</a>
+              {item.sub && <div class="gnb-sub">{item.sub.map((s) => <a href={`${root}${s.path}`}>{s.label}</a>)}</div>}
+            </div>
+          ))}
+        </nav>
+        <button class="allmenu-toggle" type="button" aria-controls="allmenu" aria-expanded="false">
+          <span class="allmenu-lines" aria-hidden="true"></span><span class="allmenu-label">전체메뉴</span>
+        </button>
+      </div>
+      <div class="allmenu" id="allmenu" hidden>
+        <div class="container allmenu-grid">
+          {site.nav.map((item) => (
+            <div>
+              <a class="allmenu-head" href={`${root}${item.path}`}>{item.label}</a>
+              {item.sub && <ul>{item.sub.map((s) => <li><a href={`${root}${s.path}`}>{s.label}</a></li>)}</ul>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </header>
+    {crumbs.length > 0 && (
+      <nav class="crumbs container" aria-label="현재 위치">
+        <a href={root}>홈</a>
+        {crumbs.map(([label, path]) => <><span aria-hidden="true">›</span>{path ? <a href={`${root}${path}`}>{label}</a> : <span aria-current="page">{label}</span>}</>)}
+      </nav>
+    )}
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="container footer-top">
+        <div class="footer-id">
+          <img src={`${root}images/uos-white.png`} alt="서울시립대학교" width="900" height="97" loading="lazy" />
+          <strong>{site.name}</strong>
+          <p>({site.postcode}) {site.address}</p>
+        </div>
+        <div class="footer-links">
+          <a href={`${root}about/`}>사업단 소개</a>
+          <a href={`${root}location/`}>오시는 길</a>
+          <a href={`${root}notices/`}>공지사항</a>
+          <a href={`${root}resources/`}>자료실</a>
+        </div>
+        <div class="footer-related">
+          <span class="eyebrow">관련 사이트</span>
+          {site.links.map((l) => <a href={l.url} target="_blank" rel="noopener">{l.label} ↗</a>)}
+        </div>
+      </div>
+      <div class="container footer-bottom">COPYRIGHT © UNIVERSITY OF SEOUL. ALL RIGHTS RESERVED.</div>
+    </footer>
+  </body>
+</html>

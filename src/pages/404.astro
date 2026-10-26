@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="페이지를 찾을 수 없습니다">
+  <section class="container section pending">
+    <p class="pending-title">페이지를 찾을 수 없습니다</p>
+    <p>주소가 바뀌었거나 삭제된 페이지입니다.</p>
+    <a class="btn btn-line" href={process.env.SITE_URL ? process.env.SITE_URL.replace(/\/$/, '') + '/' : '/'}>메인으로</a>
+  </section>
+</Layout>

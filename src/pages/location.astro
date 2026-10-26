@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
+import site from '../data/site.json';
+import { aboutTabs } from '../lib/tabs';
+const q = encodeURIComponent('서울시립대학교');
+---
+<Layout title="오시는 길" crumbs={[['사업단 소개', 'about/'], ['오시는 길']]}>
+  <PageHead eyebrow="LOCATION" title="오시는 길" tabs={aboutTabs} active="location/" />
+  <section class="container section location">
+    <div class="loc-card">
+      <span class="eyebrow">서울시립대학교</span>
+      <p class="loc-addr">({site.postcode}) {site.address}</p>
+      <div class="loc-links">
+        <a class="btn" href={`https://map.naver.com/p/search/${q}`} target="_blank" rel="noopener">네이버 지도 ↗</a>
+        <a class="btn btn-line" href={`https://map.kakao.com/?q=${q}`} target="_blank" rel="noopener">카카오맵 ↗</a>
+        <a class="btn btn-line" href="https://www.uos.ac.kr" target="_blank" rel="noopener">학교 홈페이지 ↗</a>
+      </div>
+    </div>
+    <dl class="facts">
+      <div><dt>사업단 사무실</dt><dd>확정되면 건물·호실을 안내합니다.</dd></div>
+    </dl>
+  </section>
+</Layout>

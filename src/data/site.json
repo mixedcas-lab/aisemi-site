@@ -1,0 +1,51 @@
+{
+  "name": "AI반도체 융합전공 학석사 연계과정사업단",
+  "fullName": "서울시립대학교 AI반도체 융합전공 학석사 연계과정사업단",
+  "nameEn": "Center for AI Semiconductor · University of Seoul",
+  "tagline": "AI반도체의 미래, 서울시립대학교에서 시작합니다.",
+  "description": "서울시립대학교 AI반도체 융합전공 학석사 연계과정사업단 공식 홈페이지. 사업단 소개, 교육 프로그램, 공지사항을 안내합니다.",
+  "postcode": "02504",
+  "address": "서울특별시 동대문구 서울시립대로 163",
+  "draft": true,
+  "draftNote": "시안입니다. 공지·교육 프로그램은 업체 데모 사이트의 예시 내용을 옮긴 것으로, 실제 정보로 교체해야 합니다.",
+  "links": [
+    { "label": "서울시립대학교", "url": "https://www.uos.ac.kr" },
+    { "label": "서울시립대학교 산학협력단", "url": "https://research.uos.ac.kr" }
+  ],
+  "nav": [
+    { "label": "사업단 소개", "path": "about/", "sub": [
+      { "label": "사업단 소개", "path": "about/" },
+      { "label": "조직도", "path": "about/organization/" },
+      { "label": "구성원 소개", "path": "about/members/" },
+      { "label": "오시는 길", "path": "location/" }
+    ]},
+    { "label": "교육과정", "path": "programs/", "sub": [
+      { "label": "교육 프로그램", "path": "programs/" },
+      { "label": "교육 단계", "path": "programs/#tracks" }
+    ]},
+    { "label": "산학협력", "path": "cooperation/" },
+    { "label": "학생지원", "path": "support/", "sub": [
+      { "label": "참여 신청 안내", "path": "support/" },
+      { "label": "자료실", "path": "resources/" }
+    ]},
+    { "label": "공지", "path": "notices/", "sub": [
+      { "label": "공지사항", "path": "notices/" },
+      { "label": "사업단 소식", "path": "news/" }
+    ]}
+  ],
+  "popups": [
+    { "id": "pop-2026", "eyebrow": "2026 AI반도체 융합전공 학석사 연계과정사업", "title": "기초부터 실무까지\nAI반도체 교육과정", "cta": "교육과정 자세히 보기", "path": "programs/" },
+    { "id": "pop-apply", "eyebrow": "2026학년도 2학기", "title": "사업단 참여 신청\n안내", "cta": "공지 보기", "path": "notices/n01/" }
+  ],
+  "tracks": [
+    { "level": "초급", "title": "AI반도체 기초", "text": "반도체와 인공지능의 기초를 배우는 입문 교육" },
+    { "level": "중급", "title": "반도체 설계 실무", "text": "설계 도구를 활용한 실습과 전문 역량 교육" },
+    { "level": "고급", "title": "산학 프로젝트", "text": "현장 문제를 함께 해결하는 프로젝트 교육" }
+  ],
+  "applySteps": [
+    "학교 이메일(@uos.ac.kr)로 로그인합니다.",
+    "해당 연도 사업단 참여 신청을 하고 사업단 승인을 받습니다.",
+    "참여 동기를 작성해 교육 프로그램을 신청합니다.",
+    "신청 내역에서 결과를 확인합니다."
+  ]
+}

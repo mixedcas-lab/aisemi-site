@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import site from '../../data/site.json';
+import programs from '../../data/programs.json';
+import { relativeRoot } from '../../lib/paths';
+import { range, recruitState, recruitLabel } from '../../lib/format';
+const root = relativeRoot(Astro.url.pathname);
+const years = [...new Set(programs.map((p) => p.year))].sort((a, b) => b - a);
+const year = years[0];
+const list = programs.filter((p) => p.year === year);
+const levels = ['초급', '중급', '고급', '공통'].filter((l) => list.some((p) => p.level === l));
+---
+<Layout title="교육 프로그램" crumbs={[['교육 프로그램']]}>
+  <PageHead eyebrow="EDUCATION" title="교육 프로그램" lead="기초 교육부터 산학 프로젝트까지, 단계별로 AI반도체 역량을 쌓습니다." />
+  <section class="container section" data-list>
+    <div class="list-tools">
+      <p class="list-count"><strong>{year}</strong>년 전체 프로그램 <strong data-count>{list.length}</strong>개</p>
+      <form class="search" role="search">
+        <label class="sr-only" for="program-q">프로그램명 검색</label>
+        <input id="program-q" type="search" placeholder="프로그램명 검색" data-search />
+      </form>
+    </div>
+    <div class="chips" role="group" aria-label="과정 단계">
+      <button type="button" data-filter="all" aria-pressed="true">전체</button>
+      {levels.map((l) => <button type="button" data-filter={l} aria-pressed="false">{l}</button>)}
+    </div>
+    <ul class="program-grid">
+      {list.map((p) => {
+        const st = recruitState(p.recruit);
+        return (
+          <li data-item data-group={p.level} data-text={`${p.title} ${p.kind} ${p.level}`}>
+            <a class="program-card" href={`${root}programs/${p.id}/`}>
+              <div class="program-meta">
+                <span class={`level level-${p.level}`}>{p.level} · {p.kind}</span>
+                <span class="status" data-recruit={p.recruit.join('|')} data-state={st}>{recruitLabel[st]}</span>
+              </div>
+              <h2>{p.title}</h2>
+              <p>{p.summary}</p>
+              <dl>
+                <div><dt>교육 기간</dt><dd>{range(p.period)}</dd></div>
+                <div><dt>모집 기간</dt><dd>{range(p.recruit)}</dd></div>
+              </dl>
+              <span class="more">자세히 보기 <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+    <p class="empty" data-empty hidden>검색 결과가 없습니다.</p>
+  </section>
+
+  <section class="tracks-band" id="tracks">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">TRACKS</span><h2>교육 단계</h2></div></div>
+      <ol class="tracks">
+        {site.tracks.map((t, k) => (
+          <li class={`track track-${k + 1}`}>
+            <span class="track-step">STEP {k + 1} · {t.level} 과정</span>
+            <h3>{t.title}</h3>
+            <p>{t.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Layout>

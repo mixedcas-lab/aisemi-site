@@ -1,0 +1,36 @@
+---
+import { relativeRoot } from '../lib/paths';
+import { dot } from '../lib/format';
+const { items, label = '공지' } = Astro.props;
+const root = relativeRoot(Astro.url.pathname);
+const sorted = [...items].sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned) || b.date.localeCompare(a.date));
+const cats = [...new Set(sorted.map((n) => n.category))];
+let no = sorted.filter((n) => !n.pinned).length;
+---
+<section class="container section" data-list>
+  <div class="list-tools">
+    <p class="list-count">전체 <strong data-count>{sorted.length}</strong>건</p>
+    <form class="search" role="search">
+      <label class="sr-only" for="notice-q">{label} 제목 검색</label>
+      <input id="notice-q" type="search" placeholder={`${label} 제목 검색`} data-search />
+    </form>
+  </div>
+  {cats.length > 1 && (
+    <div class="chips" role="group" aria-label="분류">
+      <button type="button" data-filter="all" aria-pressed="true">전체</button>
+      {cats.map((c) => <button type="button" data-filter={c} aria-pressed="false">{c}</button>)}
+    </div>
+  )}
+  <ul class="board-table">
+    <li class="board-row board-th" aria-hidden="true"><span>번호</span><span>분류</span><span>제목</span><span>등록일</span></li>
+    {sorted.map((n) => (
+      <li class:list={['board-row', { pinned: n.pinned }]} data-item data-group={n.category} data-text={n.title}>
+        <span class="col-no">{n.pinned ? <span class="badge badge-req">공지</span> : no--}</span>
+        <span class="col-cat"><span class="tag">{n.category}</span></span>
+        <a class="col-title" href={`${root}notices/${n.id}/`}>{n.title}{n.attachments.length > 0 && <span class="clip">첨부</span>}</a>
+        <time class="col-date" datetime={n.date}>{dot(n.date)}</time>
+      </li>
+    ))}
+  </ul>
+  <p class="empty" data-empty hidden>검색 결과가 없습니다.</p>
+</section>

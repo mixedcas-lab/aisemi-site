@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import site from '../../data/site.json';
+import { aboutTabs } from '../../lib/tabs';
+import { relativeRoot } from '../../lib/paths';
+const root = relativeRoot(Astro.url.pathname);
+const values = [
+  ['기초부터 탄탄하게', '단계별 교육으로 반도체와 AI의 원리를 이해합니다.'],
+  ['실무로 이어지는 배움', '실습과 프로젝트로 배운 내용을 직접 적용합니다.'],
+  ['성장으로 연결되는 기회', '진로 탐색과 현직자 경험을 통해 다음을 준비합니다.'],
+];
+---
+<Layout title="사업단 소개" crumbs={[['사업단 소개']]}>
+  <PageHead eyebrow="ABOUT THE CENTER" title="사업단 소개" tabs={aboutTabs} active="about/" />
+  <section class="container section about">
+    <span class="eyebrow">CONNECTING KNOWLEDGE &amp; OPPORTUNITY</span>
+    <h2 class="about-title">AI반도체 분야 전문 인재 양성을 위한<br/>교육과 산학협력</h2>
+    <div class="about-text">
+      <p>AI반도체 기술은 더 나은 내일을 만드는 기반입니다.</p>
+      <p>{site.fullName}은 학생들이 기초 지식을 단단히 쌓고, 실습과 프로젝트를 통해 현장에서 필요한 역량을 키울 수 있도록 함께합니다.</p>
+      <p>다양한 전공의 학생들이 함께 배우고 도전하며 자신만의 진로를 찾아가도록 교육과 성장의 기회를 연결합니다.</p>
+    </div>
+    <ul class="values">
+      {values.map(([t, d]) => <li><strong>{t}</strong><p>{d}</p></li>)}
+    </ul>
+    <a class="btn" href={`${root}programs/`}>교육 프로그램 안내</a>
+  </section>
+</Layout>

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "p01", "year": 2026, "title": "AI반도체 설계 기초", "level": "초급", "kind": "기초 교육",
+    "summary": "반도체 소자의 기본 원리부터 디지털 논리회로까지. AI반도체 설계의 기초를 단계별 실습으로 익히는 입문 과정입니다.",
+    "period": ["2026-10-05", "2026-11-27"], "recruit": ["2026-09-01", "2026-09-30"],
+    "place": "21세기관 실습실", "hours": 32, "capacity": 30, "instructors": "사업단 교육팀",
+    "courses": [
+      { "names": ["딥러닝개론", "인공지능개론"], "credits": 3, "cross": true },
+      { "names": ["반도체소자"], "credits": 3, "required": true },
+      { "names": ["회로이론"], "credits": 3 }
+    ],
+    "criteria": "6학점 이상 · 필수 반도체소자 · 교차과목은 1과목만 인정"
+  },
+  {
+    "id": "p02", "year": 2026, "title": "차세대 반도체 설계 실무", "level": "중급", "kind": "심화 교육",
+    "summary": "설계 도구를 활용해 실제 회로를 설계하고 검증합니다. 팀 프로젝트를 통해 반도체 설계의 전체 흐름을 경험하는 심화 과정입니다.",
+    "period": ["2026-10-12", "2026-12-04"], "recruit": ["2026-09-05", "2026-10-04"],
+    "place": "정보기술관 실습실", "hours": 40, "capacity": 24, "instructors": "산업체 협력 강사진",
+    "courses": [
+      { "names": ["컴퓨터구조"], "credits": 3 },
+      { "names": ["디지털논리설계"], "credits": 3 },
+      { "names": ["Verilog HDL설계"], "credits": 3, "required": true }
+    ],
+    "criteria": "9학점 이상 · 필수 Verilog HDL설계"
+  },
+  {
+    "id": "p03", "year": 2026, "title": "현직자와 함께하는 반도체 커리어", "level": "공통", "kind": "진로 특강",
+    "summary": "반도체 산업의 다양한 직무를 현직자와 함께 알아봅니다. 직무별 역량부터 커리어 준비까지, 나에게 맞는 방향을 탐색하세요.",
+    "period": ["2026-10-20", "2026-10-20"], "recruit": ["2026-09-01", "2026-10-15"],
+    "place": "자연과학관 세미나실", "hours": 3, "capacity": 60, "instructors": "반도체 산업 현직자",
+    "courses": [], "criteria": ""
+  },
+  {
+    "id": "p04", "year": 2026, "title": "Python으로 시작하는 AI 모델 구현", "level": "초급", "kind": "기초 교육",
+    "summary": "Python으로 데이터를 다루고 작은 AI 모델을 직접 구현합니다. 반도체와 인공지능을 연결하는 첫걸음을 시작하세요.",
+    "period": ["2026-10-19", "2026-11-16"], "recruit": ["2026-09-08", "2026-10-10"],
+    "place": "온라인·대면 병행", "hours": 20, "capacity": 30, "instructors": "사업단 교육팀",
+    "courses": [
+      { "names": ["Python 프로그래밍"], "credits": 3, "required": true },
+      { "names": ["딥러닝개론", "인공지능개론"], "credits": 3, "cross": true }
+    ],
+    "criteria": "6학점 이상 · 필수 Python 프로그래밍 · 교차과목은 1과목만 인정"
+  },
+  {
+    "id": "p05", "year": 2026, "title": "반도체 공정·소자 이해", "level": "중급", "kind": "심화 교육",
+    "summary": "반도체 제조 공정의 흐름을 살펴보고 소자 특성과 연결해 이해하는 과정입니다.",
+    "period": ["2026-09-01", "2026-09-30"], "recruit": ["2026-08-01", "2026-08-20"],
+    "place": "자연과학관", "hours": 24, "capacity": 20, "instructors": "사업단 교육팀",
+    "courses": [
+      { "names": ["반도체소자"], "credits": 3 },
+      { "names": ["회로이론"], "credits": 3 },
+      { "names": ["반도체 공정 실습"], "credits": 2, "required": true }
+    ],
+    "criteria": "8학점 이상 · 필수 반도체 공정 실습"
+  },
+  {
+    "id": "p06", "year": 2026, "title": "AI반도체 산학 프로젝트", "level": "고급", "kind": "프로젝트",
+    "summary": "산업 현장의 문제를 팀 프로젝트로 해결하며 설계·검증·협업 경험을 쌓습니다.",
+    "period": ["2026-11-02", "2026-12-18"], "recruit": ["2026-10-01", "2026-10-21"],
+    "place": "교내 프로젝트실", "hours": 48, "capacity": 16, "instructors": "산업체 멘토",
+    "courses": [
+      { "names": ["VLSI설계"], "credits": 3, "required": true },
+      { "names": ["AI모델경량화"], "credits": 3 },
+      { "names": ["NPU아키텍처"], "credits": 3, "required": true }
+    ],
+    "criteria": "9학점 이상 · 필수 VLSI설계, NPU아키텍처"
+  }
+]
