@@ -29,6 +29,15 @@ const canonical = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/$/, '')
   <body>
     <a class="skip-link" href="#main">본문 바로가기</a>
     {site.draft && <div class="draft-bar" role="note"><div class="container">{site.draftNote}</div></div>}
+    <div class="util-bar">
+      <div class="container util-inner">
+        <a class="util-uos" href="https://www.uos.ac.kr" target="_blank" rel="noopener">서울시립대학교 ↗</a>
+        <nav class="util-login" aria-label="로그인">
+          <a href={`${root}login/`}>학생 로그인</a>
+          <a href={`${root}login/#staff`}>사업단 로그인</a>
+        </nav>
+      </div>
+    </div>
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href={root} aria-label={`${site.fullName} 홈`}>

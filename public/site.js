@@ -69,4 +69,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
     apply();
   });
+
+  // 로그인 시안: 학생/사업단 탭 전환(#staff로 바로 열기), 제출은 막고 안내만 표시
+  document.querySelectorAll('[data-login-tabs]').forEach((card) => {
+    const tabs = [...card.querySelectorAll('[role="tab"]')];
+    const select = (tab) => tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    tabs.forEach((t) => t.addEventListener('click', () => select(t)));
+    const fromHash = tabs.find((t) => '#' + t.getAttribute('aria-controls') === location.hash);
+    if (fromHash) select(fromHash);
+    window.addEventListener('hashchange', () => { const t = tabs.find((x) => '#' + x.getAttribute('aria-controls') === location.hash); if (t) select(t); });
+    const note = card.querySelector('[data-login-note]');
+    card.querySelectorAll('form').forEach((f) => f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      note.textContent = '시안 화면이라 로그인되지 않습니다. 실제 기능은 업체가 개발할 예정입니다.';
+      note.classList.add('is-warn');
+    }));
+  });
 });
