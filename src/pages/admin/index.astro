@@ -4,74 +4,41 @@ import PageHead from '../../components/PageHead.astro';
 import DemoGuard from '../../components/DemoGuard.astro';
 import demo from '../../data/demo.json';
 import programs from '../../data/programs.json';
-import notices from '../../data/notices.json';
+import { adminTabs } from '../../lib/tabs';
 import { relativeRoot } from '../../lib/paths';
-import { dot, recruitState, recruitLabel } from '../../lib/format';
+import { range } from '../../lib/format';
 const root = relativeRoot(Astro.url.pathname);
-const count = (st) => demo.joinRequests.filter((j) => j.status === st).length;
-const applied = Object.values(demo.programApplicants).reduce((a, b) => a + b, 0);
 const year = Math.max(...programs.map((p) => p.year));
+const waitingJoin = demo.joinRequests.filter((j) => j.status === '신청').length;
+const notUpdated = demo.students.filter((s) => s.join === '승인' && !s.updated).length;
+const waitlist = demo.roster.people.filter((p) => p.status === '대기').length;
+const approved = demo.students.filter((s) => s.join === '승인').length;
+const applied = Object.values(demo.programApplicants).reduce((a, b) => a + b, 0);
 ---
 <Layout title="관리자 화면" crumbs={[['관리자 화면']]}>
   <DemoGuard role="staff" label="관리자">
-    <PageHead eyebrow="ADMIN" title="관리자 화면" lead="예시 데이터로 채운 시안 화면입니다. 승인·반려는 이 화면에서만 바뀌고, 새로고침하면 처음 상태로 돌아갑니다." />
+    <PageHead eyebrow="ADMIN · 예시 데이터" title="관리자 화면" tabs={adminTabs} active="admin/" />
     <div class="container section dash">
       <section class="stats">
-        <div class="stat"><span>참여 신청 대기</span><strong data-count-status="신청">{count('신청')}</strong></div>
-        <div class="stat"><span>{year}년 참여 승인</span><strong data-count-status="승인">{count('승인')}</strong></div>
+        <div class="stat"><span>참여 신청 대기</span><strong>{waitingJoin}</strong></div>
+        <div class="stat"><span>{year}년 참여 승인</span><strong>{approved}</strong></div>
         <div class="stat"><span>{year}년 프로그램</span><strong>{programs.filter((p) => p.year === year).length}</strong></div>
         <div class="stat"><span>프로그램 신청 합계</span><strong>{applied}</strong></div>
       </section>
-
       <section class="panel">
-        <div class="panel-head"><h2>사업단 참여 신청</h2><button class="btn btn-line" type="button" data-mock>명단 엑셀 내려받기</button></div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>이름</th><th>학과</th><th>학년</th><th>신청일</th><th>상태</th><th>처리</th></tr></thead>
-            <tbody>
-              {demo.joinRequests.map((j) => (
-                <tr data-row>
-                  <td>{j.name}</td><td>{j.dept}</td><td class="num">{j.grade}</td><td class="num">{dot(j.date)}</td>
-                  <td><span class="state" data-state={j.status} data-cell-status>{j.status}</span></td>
-                  <td class="actions"><button class="btn-sm" type="button" data-set-status="승인">승인</button><button class="btn-sm btn-sm-line" type="button" data-set-status="반려">반려</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <h2>처리할 일</h2>
+        <ul class="todo-list">
+          <li class="todo todo-warn"><span><strong>참여 신청 {waitingJoin}건</strong>이 승인을 기다리고 있습니다.</span><a class="btn-sm" href={`${root}admin/join/`}>처리하기</a></li>
+          <li class="todo todo-warn"><span>승인 학생 중 <strong>{notUpdated}명</strong>이 2학기 학적 정보를 갱신하지 않았습니다.</span><a class="btn-sm" href={`${root}admin/stats/#mail`}>안내 메일 보내기</a></li>
+          <li class="todo todo-info"><span>「{programs.find((p) => p.id === demo.roster.program)?.title}」 대기자 <strong>{waitlist}명</strong>의 선발 여부를 정해 주세요.</span><a class="btn-sm" href={`${root}admin/programs/`}>선발하기</a></li>
+          <li class="todo todo-info" data-closing-soon data-ranges={programs.map((p) => p.recruit.join("|")).join(",")} hidden><span>모집 마감이 7일 이내인 프로그램이 있습니다.</span><a class="btn-sm" href={`${root}admin/programs/`}>확인</a></li>
+        </ul>
       </section>
-
       <section class="panel">
-        <div class="panel-head"><h2>프로그램별 신청 현황</h2><button class="btn btn-line" type="button" data-mock>프로그램 추가</button></div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>프로그램</th><th>단계</th><th>모집</th><th>신청 / 정원</th><th></th></tr></thead>
-            <tbody>
-              {programs.map((p) => { const st = recruitState(p.recruit); return (
-                <tr>
-                  <td><a href={`${root}programs/${p.id}/`}>{p.title}</a></td><td>{p.level}</td>
-                  <td><span class="status" data-recruit={p.recruit.join('|')} data-state={st}>{recruitLabel[st]}</span></td>
-                  <td class="num">{demo.programApplicants[p.id]} / {p.capacity}</td>
-                  <td class="actions"><button class="btn-sm btn-sm-line" type="button" data-mock>신청자 보기</button></td>
-                </tr>); })}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head"><h2>공지 관리</h2><button class="btn" type="button" data-mock>새 공지 작성</button></div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>제목</th><th>분류</th><th>등록일</th><th></th></tr></thead>
-            <tbody>
-              {notices.map((n) => (
-                <tr><td><a href={`${root}notices/${n.id}/`}>{n.title}</a></td><td>{n.category}</td><td class="num">{dot(n.date)}</td>
-                <td class="actions"><button class="btn-sm btn-sm-line" type="button" data-mock>수정</button><button class="btn-sm btn-sm-line" type="button" data-mock>삭제</button></td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <h2>진행 중·예정 교육</h2>
+        <ul class="mini-list">
+          {programs.map((p) => <li><a href={`${root}programs/${p.id}/`}>{p.title}</a><span class="muted">{range(p.period)}</span></li>)}
+        </ul>
       </section>
     </div>
   </DemoGuard>

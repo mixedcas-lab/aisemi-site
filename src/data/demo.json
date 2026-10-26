@@ -1,13 +1,19 @@
 {
-  "note": "로그인 시안용 예시 데이터. 실제 학생 정보가 아니다.",
+  "note": "로그인 시안용 예시 데이터. 실제 학생 정보가 아니다. 이수 기준도 예시다.",
   "student": {
     "name": "홍길동", "email": "student01@uos.ac.kr", "studentId": "2023xxxxxx",
     "dept": "전자전기컴퓨터공학부", "grade": 3, "graduation": "2027년 2월",
     "joinYear": 2026, "joinStatus": "승인", "joinDate": "2026-09-03"
   },
+  "todos": [
+    { "kind": "warn", "text": "2학기 학적 정보를 갱신해 주세요.", "due": "2026-10-31", "action": "학적 정보 갱신" },
+    { "kind": "info", "text": "신청한 「현직자와 함께하는 반도체 커리어」는 사업단 검토 중입니다.", "due": "" },
+    { "kind": "bad", "text": "「AI반도체 산학 프로젝트」 신청이 반려되었습니다. 사유를 확인해 주세요.", "due": "" }
+  ],
   "myApplications": [
     { "program": "p01", "applied": "2026-09-10", "status": "승인" },
     { "program": "p03", "applied": "2026-09-20", "status": "신청" },
+    { "program": "p06", "applied": "2026-10-02", "status": "반려", "reason": "고급 과정은 중급 과정 이수자를 우선 선발합니다. 다음 학기에 다시 신청해 주세요." },
     { "program": "p05", "applied": "2026-08-12", "status": "이수" }
   ],
   "myCourses": [
@@ -15,12 +21,33 @@
     { "term": "2026-1", "name": "회로이론", "credits": 3 },
     { "term": "2026-2", "name": "반도체 공정 실습", "credits": 2 }
   ],
-  "joinRequests": [
-    { "id": "j1", "name": "예시학생 A", "dept": "전자전기컴퓨터공학부", "grade": 3, "date": "2026-10-21", "status": "신청" },
-    { "id": "j2", "name": "예시학생 B", "dept": "컴퓨터과학부", "grade": 2, "date": "2026-10-20", "status": "신청" },
-    { "id": "j3", "name": "예시학생 C", "dept": "물리학과", "grade": 4, "date": "2026-10-18", "status": "신청" },
-    { "id": "j4", "name": "예시학생 D", "dept": "기계정보공학과", "grade": 3, "date": "2026-10-11", "status": "승인" },
-    { "id": "j5", "name": "예시학생 E", "dept": "전자전기컴퓨터공학부", "grade": 1, "date": "2026-10-09", "status": "반려" }
+  "criteria": { "total": 21, "required": ["반도체소자", "VLSI설계", "NPU아키텍처"] },
+  "students": [
+    { "id": "s1", "name": "홍길동", "dept": "전자전기컴퓨터공학부", "grade": 3, "join": "승인", "updated": true, "credits": 8, "apps": 4 },
+    { "id": "s2", "name": "예시학생 A", "dept": "전자전기컴퓨터공학부", "grade": 3, "join": "신청", "updated": true, "credits": 0, "apps": 0 },
+    { "id": "s3", "name": "예시학생 B", "dept": "컴퓨터과학부", "grade": 2, "join": "신청", "updated": true, "credits": 0, "apps": 0 },
+    { "id": "s4", "name": "예시학생 C", "dept": "물리학과", "grade": 4, "join": "신청", "updated": false, "credits": 0, "apps": 0 },
+    { "id": "s5", "name": "예시학생 D", "dept": "기계정보공학과", "grade": 3, "join": "승인", "updated": false, "credits": 6, "apps": 2 },
+    { "id": "s6", "name": "예시학생 E", "dept": "전자전기컴퓨터공학부", "grade": 1, "join": "반려", "updated": true, "credits": 0, "apps": 0 },
+    { "id": "s7", "name": "예시학생 F", "dept": "컴퓨터과학부", "grade": 4, "join": "승인", "updated": true, "credits": 15, "apps": 5 },
+    { "id": "s8", "name": "예시학생 G", "dept": "전자전기컴퓨터공학부", "grade": 2, "join": "승인", "updated": false, "credits": 3, "apps": 1 }
   ],
-  "programApplicants": { "p01": 18, "p02": 11, "p03": 42, "p04": 25, "p05": 14, "p06": 9 }
+  "joinRequests": [
+    { "id": "j1", "student": "s2", "date": "2026-10-21", "status": "신청" },
+    { "id": "j2", "student": "s3", "date": "2026-10-20", "status": "신청" },
+    { "id": "j3", "student": "s4", "date": "2026-10-18", "status": "신청" },
+    { "id": "j4", "student": "s5", "date": "2026-10-11", "status": "승인" },
+    { "id": "j5", "student": "s6", "date": "2026-10-09", "status": "반려" }
+  ],
+  "programApplicants": { "p01": 18, "p02": 11, "p03": 42, "p04": 25, "p05": 14, "p06": 9 },
+  "roster": {
+    "program": "p01",
+    "sessions": 8,
+    "people": [
+      { "student": "s1", "motive": "설계 실습 경험을 쌓고 싶습니다.", "status": "선발", "attend": 7 },
+      { "student": "s5", "motive": "디지털 회로 기초를 다지고 싶습니다.", "status": "선발", "attend": 8 },
+      { "student": "s7", "motive": "대학원 진학 전 기초를 정리하려고 합니다.", "status": "선발", "attend": 5 },
+      { "student": "s8", "motive": "반도체 설계 직무에 관심이 있습니다.", "status": "대기", "attend": 0 }
+    ]
+  }
 }

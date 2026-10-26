@@ -1,0 +1,56 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import DemoGuard from '../../components/DemoGuard.astro';
+import demo from '../../data/demo.json';
+import { adminTabs } from '../../lib/tabs';
+import { programById } from '../../lib/demo';
+import { dot } from '../../lib/format';
+const me = demo.student;
+---
+<Layout title="학생 명부" crumbs={[['관리자 화면', 'admin/'], ['학생 명부']]}>
+  <DemoGuard role="staff" label="관리자">
+    <PageHead eyebrow="ADMIN · 예시 데이터" title="학생 명부" lead="학생을 누르면 참여·신청·이수 이력을 볼 수 있습니다. 상세 이력은 첫 번째 학생만 예시로 채웠습니다." tabs={adminTabs} active="admin/students/" />
+    <section class="container section" data-list>
+      <div class="list-tools">
+        <p class="list-count">전체 <strong data-count>{demo.students.length}</strong>명</p>
+        <form class="search" role="search"><label class="sr-only" for="student-q">이름·학과 검색</label><input id="student-q" type="search" placeholder="이름·학과 검색" data-search /></form>
+      </div>
+      <div class="chips" role="group" aria-label="상태">
+        <button type="button" data-filter="all" aria-pressed="true">전체</button>
+        <button type="button" data-filter="승인" aria-pressed="false">참여 승인</button>
+        <button type="button" data-filter="신청" aria-pressed="false">승인 대기</button>
+        <button type="button" data-filter="미갱신" aria-pressed="false">학적 미갱신</button>
+      </div>
+      <ul class="roster">
+        {demo.students.map((s, k) => (
+          <li data-item data-tags={`${s.join}${s.join === '승인' && !s.updated ? ' 미갱신' : ''}`} data-text={`${s.name} ${s.dept}`}>
+            <details class="person">
+              <summary>
+                <span class="person-name">{s.name}</span>
+                <span class="muted">{s.dept} · {s.grade}학년</span>
+                <span class="state" data-state={s.join}>{s.join}</span>
+                {s.join === '승인' && !s.updated && <span class="state" data-state="신청">학적 미갱신</span>}
+                <span class="person-num">{s.credits}학점 · 신청 {s.apps}건</span>
+              </summary>
+              {k === 0 ? (
+                <div class="person-body">
+                  <dl class="facts">
+                    <div><dt>학교 이메일</dt><dd>{me.email}</dd></div>
+                    <div><dt>졸업 예정</dt><dd>{me.graduation}</dd></div>
+                    <div><dt>참여</dt><dd>{me.joinYear}년 {me.joinStatus} ({dot(me.joinDate)})</dd></div>
+                  </dl>
+                  <table class="data-table">
+                    <thead><tr><th>프로그램</th><th>신청일</th><th>상태</th></tr></thead>
+                    <tbody>{demo.myApplications.map((a) => <tr><td>{programById[a.program].title}</td><td class="num">{dot(a.applied)}</td><td><span class="state" data-state={a.status}>{a.status}</span></td></tr>)}</tbody>
+                  </table>
+                </div>
+              ) : <div class="person-body muted">예시에서는 상세 이력을 첫 번째 학생만 채웠습니다.</div>}
+            </details>
+          </li>
+        ))}
+      </ul>
+      <p class="empty" data-empty hidden>조건에 맞는 학생이 없습니다.</p>
+    </section>
+  </DemoGuard>
+</Layout>

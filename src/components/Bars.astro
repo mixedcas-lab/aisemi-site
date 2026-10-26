@@ -1,0 +1,14 @@
+---
+// 가로 막대: 한 가지 값을 항목별로 비교 (값은 막대 옆에 직접 표시)
+const { rows, max, unit = '' } = Astro.props;
+const top = max ?? Math.max(...rows.map((r) => r.value), 1);
+---
+<ul class="bars">
+  {rows.map((r) => (
+    <li>
+      <span class="bar-label">{r.label}</span>
+      <span class="bar-track"><span class="bar-fill" style={`width:${(r.value / top) * 100}%`}></span></span>
+      <span class="bar-value">{r.value}{unit}{r.note && <span class="muted"> {r.note}</span>}</span>
+    </li>
+  ))}
+</ul>

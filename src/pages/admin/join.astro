@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import DemoGuard from '../../components/DemoGuard.astro';
+import demo from '../../data/demo.json';
+import { adminTabs } from '../../lib/tabs';
+import { studentById } from '../../lib/demo';
+import { dot } from '../../lib/format';
+---
+<Layout title="참여 신청 관리" crumbs={[['관리자 화면', 'admin/'], ['참여 신청']]}>
+  <DemoGuard role="staff" label="관리자">
+    <PageHead eyebrow="ADMIN · 예시 데이터" title="참여 신청" lead="승인·반려는 이 화면에서만 바뀌고, 새로고침하면 처음 상태로 돌아갑니다." tabs={adminTabs} active="admin/join/" />
+    <div class="container section dash">
+      <section class="panel">
+        <div class="panel-head"><h2>2026년 사업단 참여 신청</h2><button class="btn btn-line" type="button" data-mock>명단 엑셀 내려받기</button></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>이름</th><th>학과</th><th>학년</th><th>신청일</th><th>상태</th><th class="actions">처리</th></tr></thead>
+            <tbody>
+              {demo.joinRequests.map((j) => { const s = studentById[j.student]; return (
+                <tr data-row>
+                  <td>{s.name}</td><td>{s.dept}</td><td class="num">{s.grade}</td><td class="num">{dot(j.date)}</td>
+                  <td><span class="state" data-state={j.status} data-cell-status>{j.status}</span><span class="reason" data-cell-reason></span></td>
+                  <td class="actions"><button class="btn-sm" type="button" data-set-status="승인">승인</button><button class="btn-sm btn-sm-line" type="button" data-reject>반려</button></td>
+                </tr>); })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <dialog class="dialog" data-reject-dialog>
+      <form method="dialog" class="dialog-form">
+        <h2>반려 사유</h2>
+        <label class="sr-only" for="reject-reason">반려 사유</label>
+        <textarea id="reject-reason" rows="4" placeholder="학생에게 보여 줄 사유를 적어 주세요."></textarea>
+        <div class="dialog-actions"><button class="btn btn-line" value="cancel">취소</button><button class="btn" value="ok">반려하기</button></div>
+      </form>
+    </dialog>
+  </DemoGuard>
+</Layout>

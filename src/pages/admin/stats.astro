@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import DemoGuard from '../../components/DemoGuard.astro';
+import Bars from '../../components/Bars.astro';
+import demo from '../../data/demo.json';
+import programs from '../../data/programs.json';
+import { adminTabs } from '../../lib/tabs';
+import { countBy, programById } from '../../lib/demo';
+const join = countBy(demo.students, (s) => s.join);
+const depts = Object.entries(countBy(demo.students.filter((s) => s.join === '승인'), (s) => s.dept)).sort((a, b) => b[1] - a[1]);
+const approved = demo.students.filter((s) => s.join === '승인');
+const notUpdated = approved.filter((s) => !s.updated).length;
+const selected = demo.roster.people.filter((p) => p.status === '선발').length;
+---
+<Layout title="통계·메일" crumbs={[['관리자 화면', 'admin/'], ['통계·메일']]}>
+  <DemoGuard role="staff" label="관리자">
+    <PageHead eyebrow="ADMIN · 예시 데이터" title="통계·메일" lead="숫자는 예시 데이터에서 계산했습니다. 실제 화면에서는 연도별로 바꿔 볼 수 있어야 합니다." tabs={adminTabs} active="admin/stats/" />
+    <div class="container section dash">
+      <section class="dash-row">
+        <div class="panel">
+          <div class="panel-head"><h2>2026년 참여 현황</h2><button class="btn-sm btn-sm-line" type="button" data-mock>엑셀</button></div>
+          <Bars rows={['승인', '신청', '반려'].map((k) => ({ label: k, value: join[k] || 0 }))} unit="명" />
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>참여 학생 학과 분포</h2><button class="btn-sm btn-sm-line" type="button" data-mock>엑셀</button></div>
+          <Bars rows={depts.map(([label, value]) => ({ label, value }))} unit="명" />
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h2>프로그램별 신청 대비 정원</h2><button class="btn-sm btn-sm-line" type="button" data-mock>결과보고용 엑셀</button></div>
+        <Bars rows={programs.map((p) => ({ label: p.title, value: demo.programApplicants[p.id], note: `/ 정원 ${p.capacity}` }))} max={Math.max(...programs.map((p) => Math.max(p.capacity, demo.programApplicants[p.id])))} unit="명" />
+      </section>
+      <section class="panel" id="mail">
+        <h2>단체 메일</h2>
+        <form class="mail-form" data-mail-form>
+          <label for="mail-to">받는 사람</label>
+          <select id="mail-to">
+            <option data-count={approved.length}>참여 승인 학생 전체 ({approved.length}명)</option>
+            <option data-count={notUpdated} selected>학적 정보 미갱신 학생 ({notUpdated}명)</option>
+            <option data-count={selected}>「{programById[demo.roster.program].title}」 선발자 ({selected}명)</option>
+          </select>
+          <label for="mail-subject">제목</label>
+          <input id="mail-subject" type="text" value="[AI반도체 사업단] 2학기 학적 정보 갱신 안내" />
+          <label for="mail-body">내용</label>
+          <textarea id="mail-body" rows="5">나의 참여현황에서 현재 학과·학년·졸업 예정 시기를 확인하고 10월 31일까지 갱신해 주세요.</textarea>
+          <button class="btn" type="submit">보내기</button>
+        </form>
+      </section>
+    </div>
+  </DemoGuard>
+</Layout>

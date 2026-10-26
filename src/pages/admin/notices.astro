@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import DemoGuard from '../../components/DemoGuard.astro';
+import notices from '../../data/notices.json';
+import { adminTabs } from '../../lib/tabs';
+import { relativeRoot } from '../../lib/paths';
+import { dot } from '../../lib/format';
+const root = relativeRoot(Astro.url.pathname);
+---
+<Layout title="공지 관리" crumbs={[['관리자 화면', 'admin/'], ['공지 관리']]}>
+  <DemoGuard role="staff" label="관리자">
+    <PageHead eyebrow="ADMIN · 예시 데이터" title="공지 관리" tabs={adminTabs} active="admin/notices/" />
+    <div class="container section dash">
+      <section class="panel">
+        <div class="panel-head"><h2>공지·소식</h2><div><button class="btn btn-line" type="button" data-mock>팝업 관리</button> <button class="btn" type="button" data-mock>새 공지 작성</button></div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>제목</th><th>분류</th><th>등록일</th><th class="actions"></th></tr></thead>
+            <tbody>
+              {notices.map((n) => (
+                <tr><td><a href={`${root}notices/${n.id}/`}>{n.title}</a>{n.pinned && <span class="badge badge-req">고정</span>}</td><td>{n.category}</td><td class="num">{dot(n.date)}</td>
+                <td class="actions"><button class="btn-sm btn-sm-line" type="button" data-mock>수정</button><button class="btn-sm btn-sm-line" type="button" data-mock>삭제</button></td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </DemoGuard>
+</Layout>

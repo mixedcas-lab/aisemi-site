@@ -4,49 +4,84 @@ import PageHead from '../../components/PageHead.astro';
 import DemoGuard from '../../components/DemoGuard.astro';
 import demo from '../../data/demo.json';
 import programs from '../../data/programs.json';
+import { programById } from '../../lib/demo';
 import { relativeRoot } from '../../lib/paths';
-import { dot } from '../../lib/format';
+import { dot, range, recruitState } from '../../lib/format';
 const root = relativeRoot(Astro.url.pathname);
 const s = demo.student;
-const byId = Object.fromEntries(programs.map((p) => [p.id, p]));
-const total = demo.myCourses.reduce((a, c) => a + c.credits, 0);
+const earned = demo.myCourses.reduce((a, c) => a + c.credits, 0);
+const taken = new Set(demo.myCourses.map((c) => c.name));
+const goal = demo.criteria.total;
+const pct = Math.min(100, Math.round((earned / goal) * 100));
 ---
 <Layout title="나의 참여현황" crumbs={[['나의 참여현황']]}>
   <DemoGuard role="student" label="나의 참여현황">
-    <PageHead eyebrow="MY PAGE" title="나의 참여현황" lead="예시 데이터로 채운 시안 화면입니다." />
+    <PageHead eyebrow="MY PAGE · 예시 데이터" title="나의 참여현황" lead={`${s.name}님, 안녕하세요. 예시 데이터로 채운 시안 화면입니다.`} />
     <div class="container section dash">
+      <section class="panel">
+        <h2>할 일</h2>
+        <ul class="todo-list">
+          {demo.todos.map((t) => (
+            <li class={`todo todo-${t.kind}`}>
+              <span>{t.text}{t.due && <span class="muted"> · {dot(t.due)}까지</span>}</span>
+              {t.action && <button class="btn-sm" type="button" data-mock>{t.action}</button>}
+              {t.kind === 'bad' && <a class="btn-sm btn-sm-line" href="#applications">사유 보기</a>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section class="dash-row">
         <div class="panel">
-          <h2>내 정보 <span class="badge">예시</span></h2>
-          <dl class="facts">
-            <div><dt>이름</dt><dd>{s.name}</dd></div>
-            <div><dt>학교 이메일</dt><dd>{s.email}</dd></div>
-            <div><dt>학과·학년</dt><dd>{s.dept} · {s.grade}학년</dd></div>
-            <div><dt>졸업 예정</dt><dd>{s.graduation}</dd></div>
-          </dl>
-          <button class="btn btn-line" type="button" data-mock>학적 정보 갱신</button>
+          <h2>융합전공 이수 진행도</h2>
+          <p class="progress-num"><strong>{earned}</strong> / {goal}학점 <span class="muted">({pct}%)</span></p>
+          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax={goal} aria-valuenow={earned} aria-label="이수 학점"><span style={`width:${pct}%`}></span></div>
+          <ul class="req-list">
+            {demo.criteria.required.map((c) => <li class:list={{ done: taken.has(c) }}><span aria-hidden="true">{taken.has(c) ? '✓' : '○'}</span> 필수 {c}{taken.has(c) ? ' 이수' : ' 미이수'}</li>)}
+          </ul>
+          <p class="muted">예시 기준입니다. 실제 이수 기준(총 학점, 필수 과목)은 사업단이 확정합니다.</p>
         </div>
         <div class="panel panel-accent">
           <h2>{s.joinYear}년 사업단 참여</h2>
           <p class="big-status"><span class="state" data-state="승인">{s.joinStatus}</span></p>
           <p class="muted">신청일 {dot(s.joinDate)}. 승인된 해에는 교육 프로그램을 신청할 수 있습니다.</p>
-          <a class="btn" href={`${root}programs/`}>교육 프로그램 보기</a>
+          <dl class="facts compact">
+            <div><dt>학과·학년</dt><dd>{s.dept} · {s.grade}학년</dd></div>
+            <div><dt>졸업 예정</dt><dd>{s.graduation}</dd></div>
+          </dl>
+          <div class="btn-row"><button class="btn btn-line" type="button" data-mock>학적 정보 갱신</button><button class="btn btn-line" type="button" data-mock>참여 확인서 출력</button></div>
         </div>
       </section>
 
       <section class="panel">
+        <h2>지금 신청할 수 있는 프로그램</h2>
+        <ul class="mini-list">
+          {programs.map((p) => (
+            <li data-open-item data-recruit-range={p.recruit.join('|')} hidden={recruitState(p.recruit) !== 'open'}>
+              <a href={`${root}programs/${p.id}/`}>{p.title}</a>
+              <span class="muted">{p.level} · 모집 {range(p.recruit)}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="muted" data-open-empty hidden={programs.some((p) => recruitState(p.recruit) === 'open')}>지금 모집 중인 프로그램이 없습니다. 새 모집은 공지사항으로 안내합니다.</p>
+      </section>
+
+      <section class="panel" id="applications">
         <h2>프로그램 신청 내역</h2>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>프로그램</th><th>단계</th><th>신청일</th><th>상태</th><th></th></tr></thead>
+            <thead><tr><th>프로그램</th><th>단계</th><th>신청일</th><th>상태</th><th class="actions"></th></tr></thead>
             <tbody>
               {demo.myApplications.map((a) => (
                 <tr data-row>
-                  <td><a href={`${root}programs/${a.program}/`}>{byId[a.program].title}</a></td>
-                  <td>{byId[a.program].level}</td>
+                  <td><a href={`${root}programs/${a.program}/`}>{programById[a.program].title}</a></td>
+                  <td>{programById[a.program].level}</td>
                   <td class="num">{dot(a.applied)}</td>
-                  <td><span class="state" data-state={a.status} data-cell-status>{a.status}</span></td>
-                  <td>{a.status === '신청' && <button class="btn-sm" type="button" data-set-status="취소">신청 취소</button>}</td>
+                  <td><span class="state" data-state={a.status} data-cell-status>{a.status}</span>{a.reason && <p class="reason-text">사유: {a.reason}</p>}</td>
+                  <td class="actions">
+                    {a.status === '신청' && <button class="btn-sm btn-sm-line" type="button" data-set-status="취소">신청 취소</button>}
+                    {a.status === '이수' && <button class="btn-sm btn-sm-line" type="button" data-mock>수료증 출력</button>}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -55,7 +90,7 @@ const total = demo.myCourses.reduce((a, c) => a + c.credits, 0);
       </section>
 
       <section class="panel">
-        <h2>교과목 이력 <span class="muted">총 {total}학점</span></h2>
+        <h2>교과목 이력 <span class="muted">총 {earned}학점</span></h2>
         <div class="table-wrap">
           <table class="data-table">
             <thead><tr><th>학기</th><th>교과목</th><th>학점</th></tr></thead>
