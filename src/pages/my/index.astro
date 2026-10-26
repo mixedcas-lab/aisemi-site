@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import DemoGuard from '../../components/DemoGuard.astro';
+import demo from '../../data/demo.json';
+import programs from '../../data/programs.json';
+import { relativeRoot } from '../../lib/paths';
+import { dot } from '../../lib/format';
+const root = relativeRoot(Astro.url.pathname);
+const s = demo.student;
+const byId = Object.fromEntries(programs.map((p) => [p.id, p]));
+const total = demo.myCourses.reduce((a, c) => a + c.credits, 0);
+---
+<Layout title="나의 참여현황" crumbs={[['나의 참여현황']]}>
+  <DemoGuard role="student" label="나의 참여현황">
+    <PageHead eyebrow="MY PAGE" title="나의 참여현황" lead="예시 데이터로 채운 시안 화면입니다." />
+    <div class="container section dash">
+      <section class="dash-row">
+        <div class="panel">
+          <h2>내 정보 <span class="badge">예시</span></h2>
+          <dl class="facts">
+            <div><dt>이름</dt><dd>{s.name}</dd></div>
+            <div><dt>학교 이메일</dt><dd>{s.email}</dd></div>
+            <div><dt>학과·학년</dt><dd>{s.dept} · {s.grade}학년</dd></div>
+            <div><dt>졸업 예정</dt><dd>{s.graduation}</dd></div>
+          </dl>
+          <button class="btn btn-line" type="button" data-mock>학적 정보 갱신</button>
+        </div>
+        <div class="panel panel-accent">
+          <h2>{s.joinYear}년 사업단 참여</h2>
+          <p class="big-status"><span class="state" data-state="승인">{s.joinStatus}</span></p>
+          <p class="muted">신청일 {dot(s.joinDate)}. 승인된 해에는 교육 프로그램을 신청할 수 있습니다.</p>
+          <a class="btn" href={`${root}programs/`}>교육 프로그램 보기</a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>프로그램 신청 내역</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>프로그램</th><th>단계</th><th>신청일</th><th>상태</th><th></th></tr></thead>
+            <tbody>
+              {demo.myApplications.map((a) => (
+                <tr data-row>
+                  <td><a href={`${root}programs/${a.program}/`}>{byId[a.program].title}</a></td>
+                  <td>{byId[a.program].level}</td>
+                  <td class="num">{dot(a.applied)}</td>
+                  <td><span class="state" data-state={a.status} data-cell-status>{a.status}</span></td>
+                  <td>{a.status === '신청' && <button class="btn-sm" type="button" data-set-status="취소">신청 취소</button>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>교과목 이력 <span class="muted">총 {total}학점</span></h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>학기</th><th>교과목</th><th>학점</th></tr></thead>
+            <tbody>{demo.myCourses.map((c) => <tr><td class="num">{c.term.replace('-', '년 ')}학기</td><td>{c.name}</td><td class="num">{c.credits}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </DemoGuard>
+</Layout>

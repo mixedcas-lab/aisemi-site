@@ -32,9 +32,13 @@ const canonical = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/$/, '')
     <div class="util-bar">
       <div class="container util-inner">
         <a class="util-uos" href="https://www.uos.ac.kr" target="_blank" rel="noopener">서울시립대학교 ↗</a>
-        <nav class="util-login" aria-label="로그인">
+        <nav class="util-login" aria-label="로그인" data-util-guest>
           <a href={`${root}login/`}>학생 로그인</a>
           <a href={`${root}login/#staff`}>사업단 로그인</a>
+        </nav>
+        <nav class="util-login" aria-label="내 메뉴" data-util-session data-my={`${root}my/`} data-admin={`${root}admin/`} data-home={root} hidden>
+          <a data-session-home href={`${root}my/`}>나의 참여현황</a>
+          <button type="button" data-logout>로그아웃</button>
         </nav>
       </div>
     </div>
@@ -74,6 +78,7 @@ const canonical = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/$/, '')
       </nav>
     )}
     <main id="main"><slot /></main>
+    <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
     <footer class="site-footer">
       <div class="container footer-top">
         <div class="footer-id">

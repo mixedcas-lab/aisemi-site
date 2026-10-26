@@ -21,7 +21,7 @@ import site from '../data/site.json';
         <button type="button" role="tab" id="tab-staff" aria-controls="staff" aria-selected="false">사업단 로그인</button>
       </div>
 
-      <form class="login-form" id="student" role="tabpanel" aria-labelledby="tab-student">
+      <form novalidate class="login-form" id="student" data-role="student" data-next="../my/" role="tabpanel" aria-labelledby="tab-student">
         <label for="student-email">학교 이메일</label>
         <input id="student-email" type="email" autocomplete="username" placeholder="아이디@uos.ac.kr" />
         <label for="student-pw">비밀번호</label>
@@ -31,7 +31,7 @@ import site from '../data/site.json';
         <p class="login-sub">학교 이메일(@uos.ac.kr)로 이용할 수 있습니다.</p>
       </form>
 
-      <form class="login-form" id="staff" role="tabpanel" aria-labelledby="tab-staff" hidden>
+      <form novalidate class="login-form" id="staff" data-role="staff" data-next="../admin/" role="tabpanel" aria-labelledby="tab-staff" hidden>
         <label for="staff-email">사업단 계정 이메일</label>
         <input id="staff-email" type="email" autocomplete="username" />
         <label for="staff-pw">비밀번호</label>
@@ -40,7 +40,7 @@ import site from '../data/site.json';
         <p class="login-sub">사업단 직원 전용입니다. 로그인 후 2단계 인증을 거칩니다.</p>
       </form>
 
-      <p class="login-note" data-login-note role="status">시안 화면입니다. 로그인 기능은 업체가 개발할 예정입니다.</p>
+      <p class="login-note" data-login-note role="status">시안 화면입니다. 빈칸 그대로 로그인을 누르면 예시 화면으로 들어갑니다. 실제 로그인은 업체가 개발할 예정입니다.</p>
     </div>
   </section>
 </Layout>

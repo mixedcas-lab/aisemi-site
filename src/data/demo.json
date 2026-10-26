@@ -1,0 +1,26 @@
+{
+  "note": "로그인 시안용 예시 데이터. 실제 학생 정보가 아니다.",
+  "student": {
+    "name": "홍길동", "email": "student01@uos.ac.kr", "studentId": "2023xxxxxx",
+    "dept": "전자전기컴퓨터공학부", "grade": 3, "graduation": "2027년 2월",
+    "joinYear": 2026, "joinStatus": "승인", "joinDate": "2026-09-03"
+  },
+  "myApplications": [
+    { "program": "p01", "applied": "2026-09-10", "status": "승인" },
+    { "program": "p03", "applied": "2026-09-20", "status": "신청" },
+    { "program": "p05", "applied": "2026-08-12", "status": "이수" }
+  ],
+  "myCourses": [
+    { "term": "2026-1", "name": "반도체소자", "credits": 3 },
+    { "term": "2026-1", "name": "회로이론", "credits": 3 },
+    { "term": "2026-2", "name": "반도체 공정 실습", "credits": 2 }
+  ],
+  "joinRequests": [
+    { "id": "j1", "name": "예시학생 A", "dept": "전자전기컴퓨터공학부", "grade": 3, "date": "2026-10-21", "status": "신청" },
+    { "id": "j2", "name": "예시학생 B", "dept": "컴퓨터과학부", "grade": 2, "date": "2026-10-20", "status": "신청" },
+    { "id": "j3", "name": "예시학생 C", "dept": "물리학과", "grade": 4, "date": "2026-10-18", "status": "신청" },
+    { "id": "j4", "name": "예시학생 D", "dept": "기계정보공학과", "grade": 3, "date": "2026-10-11", "status": "승인" },
+    { "id": "j5", "name": "예시학생 E", "dept": "전자전기컴퓨터공학부", "grade": 1, "date": "2026-10-09", "status": "반려" }
+  ],
+  "programApplicants": { "p01": 18, "p02": 11, "p03": 42, "p04": 25, "p05": 14, "p06": 9 }
+}

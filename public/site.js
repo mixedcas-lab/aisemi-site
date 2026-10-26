@@ -82,11 +82,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const fromHash = tabs.find((t) => '#' + t.getAttribute('aria-controls') === location.hash);
     if (fromHash) select(fromHash);
     window.addEventListener('hashchange', () => { const t = tabs.find((x) => '#' + x.getAttribute('aria-controls') === location.hash); if (t) select(t); });
-    const note = card.querySelector('[data-login-note]');
     card.querySelectorAll('form').forEach((f) => f.addEventListener('submit', (e) => {
       e.preventDefault();
-      note.textContent = '시안 화면이라 로그인되지 않습니다. 실제 기능은 업체가 개발할 예정입니다.';
-      note.classList.add('is-warn');
+      setRole(f.dataset.role);
+      location.href = f.dataset.next + '?demo=' + f.dataset.role;
     }));
   });
+
+  // 시안 로그인 상태(가짜): 상단 띠, 보호 화면, 로그아웃
+  const role = getRole();
+  const guest = document.querySelector('[data-util-guest]');
+  const session = document.querySelector('[data-util-session]');
+  if (role && guest && session) {
+    guest.hidden = true; session.hidden = false;
+    const home = session.querySelector('[data-session-home]');
+    home.href = role === 'staff' ? session.dataset.admin : session.dataset.my;
+    home.textContent = role === 'staff' ? '관리자 화면' : '나의 참여현황';
+  }
+  document.querySelector('[data-logout]')?.addEventListener('click', () => { setRole(null); location.href = session.dataset.home; });
+  document.querySelectorAll('[data-demo-guard]').forEach((g) => {
+    const ok = role === g.dataset.demoGuard;
+    g.querySelector('[data-guard-msg]').hidden = ok;
+    g.querySelector('[data-guard-body]').hidden = !ok;
+  });
+
+  // 시안 표: 승인·반려·취소는 이 화면에서만 바뀐다
+  document.querySelectorAll('[data-set-status]').forEach((b) => b.addEventListener('click', () => {
+    const cell = b.closest('[data-row]').querySelector('[data-cell-status]');
+    cell.textContent = cell.dataset.state = b.dataset.setStatus;
+    if (b.dataset.setStatus === '취소') b.remove();
+    document.querySelectorAll('[data-count-status]').forEach((c) => {
+      c.textContent = [...document.querySelectorAll('[data-cell-status]')].filter((x) => x.dataset.state === c.dataset.countStatus).length;
+    });
+    toast(`${b.dataset.setStatus} 처리했습니다 (시안: 저장되지 않음).`);
+  }));
+  document.querySelectorAll('[data-mock]').forEach((b) => b.addEventListener('click', () => toast(`"${b.textContent.trim()}"은 시안에서 동작하지 않습니다. 업체가 개발할 기능입니다.`)));
 });
+
+const ROLE_KEY = 'aisemi-demo-role';
+function setRole(r) { try { r ? localStorage.setItem(ROLE_KEY, r) : localStorage.removeItem(ROLE_KEY); } catch (e) {} }
+function getRole() {
+  const q = new URLSearchParams(location.search).get('demo');
+  if (q === 'student' || q === 'staff') { setRole(q); return q; }
+  try { return localStorage.getItem(ROLE_KEY); } catch (e) { return null; }
+}
+let toastTimer;
+function toast(msg) {
+  const t = document.querySelector('[data-toast]');
+  if (!t) return;
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+}
